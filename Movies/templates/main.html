@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}ethio-movie portal{% endblock %}
+{% block body %}
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}" />
+
+
+<div style="width:100%;height:80px">
+</div>
+<div class="container-fluid" style="background-color: #cccccc; padding-top: 20px;">
+    <!-- Albums -->
+    {% if movies %}
+        {% for movie in movies %}
+              {% if forloop.counter|divisibleby:'4' or forloop.counter == 1 %}
+                <div class="row">
+                     {% endif %}
+                    <div class="col-md-3" >
+                        <div class="thumbnail" style="background-color: #808080;">
+                          <a href="{% url 'Movies:detail' movie.id %}">
+                            {% if movie.Poster %}
+                             <img src="{{ movie.Poster.url }}" class="img-responsive"  width="275" height="250"
+                         style="padding: 10px;margin: 10px;">
+
+
+                             {% else %}
+                             <img src="../static/img/no-poster.png" class="img-responsive"  width="275" height="275"
+                         style="padding: 10px;">
+                             {% endif %}
+                         </a>
+                        <div style="vertical-align: top;text-align: left;padding: 10px;background-color: #E6E6FA;">
+                            <h3>{{ movie.Name }}</h3>
+                            <h4>{{ movie.Year }}</h4>
+                             <h5>IMDB Rating : <strong> {{ movie.Imdb_rating }}</strong></h5>
+                             <h5><em>{{ movie.Genre }}</em></h5>
+                            <!-- View Details -->
+                            <a href="{% url 'Movies:detail' movie.id %}" class="btn btn-primary btn-sm" role="button">View Details</a>
+                            <!-- Favorite Album -->
+                            <a href="{% url 'Movies:watched' movie.id %}" class="btn btn-default btn-sm btn-favorite" role="button">
+                                <span class="glyphicon glyphicon-star{% if not movie.Watched %}-empty{% endif %}"></span>
+                            </a>
+
+                        </div>
+                        </div>
+                    </div>
+
+                    {% if forloop.counter|divisibleby:'4' %}
+                </div>
+                {% endif %}
+          {% endfor %}
+     {% endif %}
+</div>
+
+
+{% if movies.has_other_pages %}
+  <ul class="pagination">
+    {% if movies.has_previous %}
+      <li><a href="?page={{ movies.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in movies.paginator.page_range %}
+      {% if movies.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if movies.has_next %}
+      <li><a href="?page={{ movies.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+{% endblock %}

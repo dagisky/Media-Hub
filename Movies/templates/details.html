@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}{{ movie.Name }}{% endblock %}
+{% block body %}
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}" />
+
+  <link href="https://vjs.zencdn.net/7.4.1/video-js.css" rel="stylesheet">
+  <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
+  <script src="https://vjs.zencdn.net/ie8/ie8-version/videojs-ie8.min.js"></script>
+
+
+<div class="container-fluid songs-container" style="background-image: url({% static 'img/bg2.jpg' %});background-repeat:no-repeat; background-size: 100%; position: fixed;">
+
+    <div class="row">
+    <br><br><br>
+        <!-- Left Album Info -->
+        <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <a href="{% url 'Movies:detail' movie.id %}">
+                        {% if movie.Poster %}
+                            <img src="{{ movie.Poster.url }}" class="img-responsive">
+                        {% else %}
+                            <img src="/static/img/no-img.jpg" class="img-responsive">                            
+                        {% endif %}
+                    </a>
+                    <h2>{{ movie.Name }} <small>{{ movie.Year }}</small></h2>
+                    <h2>{{ movie.Director }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Song Info -->
+        <div class="col-sm-8 col-md-9">
+
+            <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                <li role="presentation" class="active"><a href="{% url 'index' %}">Back</a></li>
+                <li role="presentation" class="active"><a href="{% url 'Movies:watched_stay' movie.id %}">
+                  {% if movie.Watched %}
+                  Mark Unwatched
+                  {% else %}
+                  Mark Watched
+                  {% endif %}
+                </a></li>
+                
+            </ul>
+
+            <div class="panel panel-default">
+                <div class="panel-body" style="background-color: #cccccc; padding-bottom: 70px;">
+                    <video id='my-video' class='video-js' controls preload='auto' width='640' height='264'
+                      poster='{{ movie.Poster }}' data-setup='{}'>
+                      <source src='http://127.0.0.1:7000/{{ movie.Path }}' type="video/mp4">
+                      <p class='vjs-no-js'>
+                        To view this video please enable JavaScript, and consider upgrading to a web browser that
+                        <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
+                      </p>
+                    </video>
+                    <p>the path of the movie: http://127.0.0.1:7000/{{ movie.Path }}</p>
+                    <p>the path of the movie: {{MEDIA_URL}}</p>
+
+                    <h5><strong>Watched</strong> :{% if movie.Watched %}Yes{% else %}No{% endif %}</h5>
+                    <h5><strong>Year</strong> : {{ movie.Year }}</h5>
+                    <h5><strong>IMDB Rating</strong> : {{ movie.Imdb_rating }}</h5>
+                    <h5><strong>Genre</strong> : {{ movie.Genre }}</h5>
+                    <h5><strong>Plot:</strong></h5>
+
+
+                    <p>{{ movie.Plot }}</p>
+
+
+                    {% if movie.trailer %}
+                    <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embeded-responsive-item" src="{{movie.trailer}}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    {% else %}
+                    <div style="height:480px;width:854;background-color:white;">
+                      <div style="margin-top:30px">
+                      <img src="/static/img/no.gif"/>
+                      <div>
+                    </div>
+                    {% endif %}
+                  </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src='https://vjs.zencdn.net/7.4.1/video.js'></script>
+
+{% endblock %}
